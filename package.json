@@ -1,0 +1,29 @@
+{
+  "name": "yuumidebt",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Nate7611/yuumiDebt#readme",
+  "bugs": {
+    "url": "https://github.com/Nate7611/yuumiDebt/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nate7611/yuumiDebt.git"
+  },
+  "license": "MIT",
+  "author": "Nate Downey <natedowneymain@gmail.com> (https://github.com/Nate7611)",
+  "type": "commonjs",
+  "main": "main.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.4"
+  },
+  "devDependencies": {
+    "netlify-cli": "^19.1.5",
+    "vite": "^6.2.5"
+  }
+}
