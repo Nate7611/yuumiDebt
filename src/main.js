@@ -1,7 +1,9 @@
 const progressBarElement = document.getElementById('progress-bar');
-const progressBarTextElement = document.getElementById('progress-bar-text');
+const progressBarPercentTextElement = document.getElementById('progress-bar-percent-text');
+const progressBarNumberTextElement = document.getElementById('progress-bar-number-text');
+const debtLogContainer = document.getElementById('log-container');
 
-const CACHE_EXPIRATION_TIME = 2 * 60 * 1000;
+const CACHE_EXPIRATION_TIME = 20 * 60 * 1000;
 const initialDebt = 258;
 
 let debtAdded = 0;
@@ -54,5 +56,6 @@ function calculateDebt(debt) {
     console.log('Debt payed: ', Math.abs(debtPayed));
 
     progressBarElement.style.width = (percentComplete + '%').toString();
-    progressBarTextElement.textContent = (percentComplete + '% Complete').toString();
+    progressBarPercentTextElement.textContent = ('I am ' + percentComplete + '% Free!').toString();
+    progressBarNumberTextElement.textContent = (Math.abs(debtPayed) + '/' + (initialDebt + debtAdded) + ' Games Completed').toString();
 }
