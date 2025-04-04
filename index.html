@@ -7,29 +7,44 @@
     <title>Yuumi Debt Tracker</title>
 </head>
 <body>
-    <header>
+    <header class="section">
+        <img src="./src/assets/images/yuubee.png" alt="" loading="eager" decoding="async">
         <h1>Nate's Yuumi Debt Tracker</h1>
+        <img src="./src/assets/images/yuubee.png" alt="" loading="eager" decoding="async">
     </header>
 
-    <section id="progress-bar-container">
-        <h2 id="progress-bar-percent-text">My Current Debt</h2>
+    <section id="progress-bar-container" class="section">
+        <h2>Progress</h2>
+
+        <h3 id="progress-bar-percent-text">My Current Debt</h3>
 
         <div id="progress-bar-bg">
             <div id="progress-bar"></div>
         </div>
 
-        <h2 id="progress-bar-number-text"></h2>
+        <h3 id="progress-bar-number-text"></h3>
     </section>
 
 
-    <section id="debt-log">
+    <section id="explanation" class="section">
+        <h2>What is this?</h2>
+        <p>I unfortunately fell into trouble some time ago and the result was being forced to play 258 Yuumi games. This website documents my progress in repaying the debt and will showcase my attempts to lower it through bets.</p>
+    </section>
+
+    <section id="debt-log" class="section">
         <h2>Debt Log</h2>
 
         <div id="log-container"></div>
     </section>
 
+    <section id="chart" class="section">
+        <h2>Debt Chart</h2>
+    </section>
+
     <footer>
+        <p>&copy; Nate 2025</p>
         <p>Yuumi Debt Tracker was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</p>
+        <a href="https://debt.jerma.io/" target="_blank">Inspiration</a>
     </footer>
 
     <script src="src/main.js"></script>
