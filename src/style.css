@@ -21,6 +21,8 @@
 
     --button-color: #c89b3c;
     --button-hover-color: #c7ba9f;
+
+    --table-outline: #d6af59;
 }
 
 html,
@@ -84,6 +86,25 @@ a {
     color: var(--body-text-color);
 }
 
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 75%;
+    margin: 0 auto;
+}
+
+td,
+th {
+    border: 1px solid var(--table-outline);
+    text-align: left;
+    padding: 8px;
+    font-size: 1.2rem;
+}
+
+tr:nth-child(even) {
+    background-color: var(--background-color-alt);
+}
+
 .section {
     width: 100%;
     background-color: var(--background-color);
@@ -122,7 +143,8 @@ footer {
     background-color: var(--footer-background-color) !important;
 }
 
-footer p, footer a {
+footer p,
+footer a {
     max-width: 95vw;
     padding: 10px;
 }
