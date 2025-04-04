@@ -1,9 +1,13 @@
 const progressBarElement = document.getElementById('progress-bar');
 const progressBarPercentTextElement = document.getElementById('progress-bar-percent-text');
 const progressBarNumberTextElement = document.getElementById('progress-bar-number-text');
+
 const debtLogContainer = document.getElementById('log-container');
 
-const CACHE_EXPIRATION_TIME = 20 * 60 * 1000;
+const addDebtButton = document.getElementById('add-debt-button');
+const removeDebtButton = document.getElementById('remove-debt-button');
+
+const CACHE_EXPIRATION_TIME = 5 * 60 * 1000;
 const initialDebt = 258;
 
 let debtAdded = 0;
@@ -13,6 +17,9 @@ main();
 
 function main() {
     fetchDebt();
+
+    addDebtButton.addEventListener('click', addDebt);
+    removeDebtButton.addEventListener('click', removeDebt);
 };
 
 async function fetchDebt() {
@@ -58,4 +65,36 @@ function calculateDebt(debt) {
     progressBarElement.style.width = (percentComplete + '%').toString();
     progressBarPercentTextElement.textContent = ('I am ' + percentComplete + '% Free!').toString();
     progressBarNumberTextElement.textContent = (Math.abs(debtPayed) + '/' + (initialDebt + debtAdded) + ' Games Completed').toString();
+}
+
+async function addDebt() {
+    if (localStorage.getItem('voted')) {
+        alert('You have already made a change to the debt!');
+        return;
+    };
+
+    const response = await fetch('/.netlify/functions/add-debt');
+    const data = await response.json();
+
+    if (!response.ok && response.status === 403) {
+        localStorage.setItem('voted', true);
+    }
+
+    alert(data.message);
+}
+
+async function removeDebt() {
+    if (localStorage.getItem('voted')) {
+        alert('You have already made a change to the debt!');
+        return;
+    };
+
+    const response = await fetch('/.netlify/functions/remove-debt');
+    const data = await response.json();
+
+    if (!response.ok && response.status === 403) {
+        localStorage.setItem('voted', true);
+    }
+
+    alert(data.message);
 }
