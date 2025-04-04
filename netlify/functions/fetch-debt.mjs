@@ -1,8 +1,8 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseKey = import.meta.env.VITE_SUPABASE_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
+const supabaseUrl = Netlify.env.get('VITE_SUPABASE_URL');
+const supabaseKey = Netlify.env.get('VITE_SUPABASE_KEY');
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 
 export default async (req, context) => {
@@ -30,4 +30,4 @@ export default async (req, context) => {
             headers: { 'Content-Type': 'application/json' },
         });
     }
-};
+};	
