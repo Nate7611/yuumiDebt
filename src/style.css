@@ -126,6 +126,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-block: 40px;
 }
 
 header h1 {
@@ -204,4 +205,17 @@ footer a {
 #explanation-button-coontainer p {
     margin-top: 10px;
     font-size: 1rem;
+}
+
+#loading-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--background-color);
 }

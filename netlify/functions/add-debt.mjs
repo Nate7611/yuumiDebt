@@ -31,7 +31,7 @@ export default async (req, context) => {
         // Insert new debt entry
         const { error: insertError } = await supabase
             .from('debt')
-            .insert({ amount: 1, description: `Added by User`, user_ip: userIp });
+            .insert({ amount: 1, description: `Added by User.`, user_ip: userIp });
 
         if (insertError) {
             console.error('Error inserting debt:', insertError);

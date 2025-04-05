@@ -9,6 +9,8 @@ const removeDebtButton = document.getElementById('remove-debt-button');
 
 const logContainer = document.getElementById('log-container');
 
+const loadingScreen = document.getElementById('loading-screen');
+
 const CACHE_EXPIRATION_TIME = 5 * 60 * 1000;
 const initialDebt = 258;
 
@@ -27,6 +29,8 @@ function main() {
 function updateSite(data) {
     calculateDebt(data);
     buildLog(data);
+
+    loadingScreen.style.display = 'none';
 }
 
 async function fetchDebt() {
@@ -36,7 +40,8 @@ async function fetchDebt() {
     if (cachedDebt && cachedDebtTime && Date.now() - cachedDebtTime < CACHE_EXPIRATION_TIME) {
         const parsedDebt = JSON.parse(cachedDebt);
         updateSite(parsedDebt);
-    } else {
+    }
+    else {
         try {
             const response = await fetch('/.netlify/functions/fetch-debt');
             const data = await response.json();
@@ -47,6 +52,7 @@ async function fetchDebt() {
             updateSite(data);
         } catch (error) {
             console.error('Error fetching debt:', error);
+            loadingScreen.textContent = 'Error loading content, please try again later.';
         }
     }
 }
@@ -77,7 +83,7 @@ function buildLog(data) {
         const amountData = document.createElement('td');
         const gameText = entry.amount !== 1 && entry.amount !== -1 ? 'Games' : 'Game';
         amountData.textContent = `${entry.amount > 0 ? '+' : ''}${entry.amount} ${gameText}`;
-        tableRow.append(amountData);        
+        tableRow.append(amountData);
 
         const descriptionData = document.createElement('td');
         descriptionData.textContent = entry.description;
@@ -109,6 +115,9 @@ async function addDebt() {
     }
 
     alert(data.message);
+
+    localStorage.clear('debtData');
+    localStorage.clear('debtDataTime');
 }
 
 async function removeDebt() {
@@ -125,4 +134,7 @@ async function removeDebt() {
     }
 
     alert(data.message);
+
+    localStorage.clear('debtData');
+    localStorage.clear('debtDataTime');
 }

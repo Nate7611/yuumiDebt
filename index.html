@@ -1,64 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="src/style.css">
     <title>Yuumi Debt Tracker</title>
 </head>
+
 <body>
-    <header class="section">
+    <header>
         <img src="./src/assets/images/yuubee.png" alt="" loading="eager" decoding="async">
         <h1>Nate's Yuumi Debt Tracker</h1>
         <img src="./src/assets/images/yuubee.png" alt="" loading="eager" decoding="async">
     </header>
 
-    <section id="progress-bar-container" class="section">
-        <h2>Progress</h2>
+    <div id="loading-screen">
+        <h1>Loading...</h1>
+    </div>
 
-        <h3 id="progress-bar-percent-text">My Current Debt</h3>
+    <main>
+        <section id="progress-bar-container" class="section">
+            <h2>Progress</h2>
 
-        <div id="progress-bar-bg">
-            <div id="progress-bar"></div>
-        </div>
+            <h3 id="progress-bar-percent-text">My Current Debt</h3>
 
-        <h3 id="progress-bar-number-text"></h3>
-    </section>
+            <div id="progress-bar-bg">
+                <div id="progress-bar"></div>
+            </div>
+
+            <h3 id="progress-bar-number-text"></h3>
+        </section>
 
 
-    <section id="explanation" class="section">
-        <h2>What is this?</h2>
-        <p>I unfortunately fell into trouble some time ago, and the result was being forced to play 258 Yuumi games. This website documents my progress in repaying the debt and will showcase my attempts to lower it through bets or other means. Speaking of which, if you would be so generous as to remove 4 games from my debt, I would be forever grateful... If you really feel like it however, you can add another game.</p>
+        <section id="explanation" class="section">
+            <h2>What is this?</h2>
+            <p>I unfortunately fell into trouble some time ago, and the result was being forced to play 258 Yuumi games.
+                This website documents my progress in repaying the debt and will showcase my attempts to lower it
+                through bets or other means. Speaking of which, if you would be so generous as to remove 4 games from my
+                debt, I would be forever grateful... If you really feel like it however, you can add another game.</p>
 
-        <div id="explanation-button-coontainer">
-            <button id="add-debt-button">Add 1 Game to Debt</button>
-            <button id="remove-debt-button">Remove 4 Games from Debt</button>
-            <p>You can only vote once!</p>
-        </div>
-    </section>
+            <div id="explanation-button-coontainer">
+                <button id="add-debt-button">Add 1 Game to Debt</button>
+                <button id="remove-debt-button">Remove 4 Games from Debt</button>
+                <p>You can only vote once!</p>
+            </div>
+        </section>
 
-    <section id="debt-log" class="section">
-        <h2>Debt Log</h2>
+        <section id="debt-log" class="section">
+            <h2>Debt Log</h2>
 
-        <table id="log-container">
-            <tr>
-                <th>Amount</th>
-                <th>Description</th>
-                <th>Date</th>
-            </tr>
-        </table>
-    </section>
+            <table id="log-container">
+                <tr>
+                    <th>Amount</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                </tr>
+            </table>
+        </section>
 
-    <section id="chart" class="section" style="display:  none;">
-        <h2>Debt Chart</h2>
-    </section>
+        <section id="chart" class="section" style="display:  none;">
+            <h2>Debt Chart</h2>
+        </section>
+    </main>
 
     <footer>
         <p>&copy; Nate 2025</p>
-        <p>Yuumi Debt Tracker was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</p>
+        <p>Yuumi Debt Tracker was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by Riot
+            Games. Riot Games does not endorse or sponsor this project.</p>
         <a href="https://debt.jerma.io/" target="_blank">Inspiration</a>
     </footer>
 
     <script src="src/main.js"></script>
 </body>
+
 </html>
