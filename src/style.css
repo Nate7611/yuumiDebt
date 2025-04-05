@@ -155,6 +155,10 @@ footer a {
     padding: 10px;
 }
 
+footer a {
+    text-decoration: none;
+}
+
 #progress-bar-container {
     width: 100%;
     display: flex;
