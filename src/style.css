@@ -101,6 +101,11 @@ th {
     font-size: 1.2rem;
 }
 
+th {
+    color: var(--header-text-color);
+    font-size: 1.4rem;
+}
+
 tr:nth-child(even) {
     background-color: var(--background-color-alt);
 }
