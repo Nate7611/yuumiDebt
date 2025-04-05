@@ -11,7 +11,7 @@ const logContainer = document.getElementById('log-container');
 
 const loadingScreen = document.getElementById('loading-screen');
 
-const CACHE_EXPIRATION_TIME = 5 * 60 * 1000;
+const CACHE_EXPIRATION_TIME = 2 * 60 * 1000;
 const initialDebt = 258;
 
 let debtAdded = 0;
