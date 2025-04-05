@@ -35,7 +35,17 @@ body {
     font-family: spiegel-regular;
     background-color: var(--background-color);
     color: var(--body-text-color);
+    cursor: url('./assets/images/cursor.webp'), auto;
 }
+
+a:hover,
+button:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover,
+label:hover {
+    cursor: url(./assets/images/cursor-pointer.webp), pointer;
+}
+
 
 h1,
 h2,
@@ -210,7 +220,6 @@ footer a {
 #explanation-button-coontainer button:hover {
     border: 2px solid var(--button-hover-color);
 }
-
 
 #explanation-button-coontainer p {
     margin-top: 10px;
