@@ -1,8 +1,10 @@
+import Chart from 'chart.js/auto';
+import 'chartjs-adapter-luxon';
+import { DateTime } from 'luxon';
+
 const progressBarElement = document.getElementById('progress-bar');
 const progressBarPercentTextElement = document.getElementById('progress-bar-percent-text');
 const progressBarNumberTextElement = document.getElementById('progress-bar-number-text');
-
-const debtLogContainer = document.getElementById('log-container');
 
 const addDebtButton = document.getElementById('add-debt-button');
 const removeDebtButton = document.getElementById('remove-debt-button');
@@ -14,10 +16,9 @@ const loadingScreen = document.getElementById('loading-screen');
 const CACHE_EXPIRATION_TIME = 2 * 60 * 1000;
 const initialDebt = 258;
 
-let debtAdded = 0;
-let debtPayed = 0;
-
-main();
+window.addEventListener('DOMContentLoaded', () => {
+    main();
+});
 
 function main() {
     fetchDebt();
@@ -29,8 +30,11 @@ function main() {
 function updateSite(data) {
     calculateDebt(data);
     buildLog(data);
+    buildChart(data);
 
-    loadingScreen.style.display = 'none';
+    setTimeout(() => {
+        loadingScreen.style.display = 'none';
+    }, 100);
 }
 
 async function fetchDebt() {
@@ -58,6 +62,9 @@ async function fetchDebt() {
 }
 
 function calculateDebt(debt) {
+    let debtAdded = 0;
+    let debtPayed = 0;
+
     debt.debt.forEach(entry => {
         if (entry.amount > 0) {
             debtAdded += entry.amount;
@@ -75,8 +82,6 @@ function calculateDebt(debt) {
 }
 
 function buildLog(data) {
-    data.debt.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
     data.debt.forEach(entry => {
         const tableRow = document.createElement('tr');
 
@@ -100,6 +105,79 @@ function buildLog(data) {
         logContainer.append(tableRow);
     });
 };
+
+function buildChart(data) {
+    const sorted = data.debt.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+    let gamesLeft = 0;
+    let gamesPlayed = 0;
+
+    const chartData = sorted.map(entry => {
+        entry.amount > 0 ? gamesLeft += entry.amount : gamesPlayed += Math.abs(entry.amount);
+
+        return {
+            x: entry.created_at,
+            y: (initialDebt + gamesLeft) - gamesPlayed,
+            description: entry.description
+        };
+    });
+
+    new Chart(document.getElementById('debt-chart'), {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'Games Remaining',
+                data: chartData,
+                borderColor: '#c89b3c',
+                backgroundColor: '#d6ae5934',
+                fill: true,
+                tension: 0.2,
+                pointRadius: 6,
+                pointHoverRadius: 10,
+                pointBackgroundColor: '#c89b3c',
+                pointBorderColor: '#c89b3c'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Game Remaining Over Time'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const line1 = `${context.raw.y} games remaining`;
+                            const line2 = `Reason: ${context.raw.description}`;
+                            return [line1, line2];
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day',
+                        tooltipFormat: 'DD T'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Games Remaining'
+                    }
+                }
+            }
+        }
+    });
+}
 
 async function addDebt() {
     if (localStorage.getItem('voted')) {

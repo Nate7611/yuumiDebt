@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="src/style.css">
     <title>Yuumi Debt Tracker</title>
     <link rel="icon" type="image/x-icon" href="./src/assets/images/favicon.ico">
+    <script src="src/main.js" type="module"></script>
 </head>
 
 <body>
@@ -60,8 +61,11 @@
             </table>
         </section>
 
-        <section id="chart" class="section" style="display:  none;">
+        <section id="chart" class="section">
             <h2>Debt Chart</h2>
+            <div id="chart-container">
+                <canvas id="debt-chart"></canvas>
+            </div>
         </section>
     </main>
 
@@ -71,8 +75,6 @@
             Games. Riot Games does not endorse or sponsor this project.</p>
         <a href="https://debt.jerma.io/" target="_blank">Inspiration</a>
     </footer>
-
-    <script src="src/main.js"></script>
 </body>
 
 </html>

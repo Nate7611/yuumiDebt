@@ -47,6 +47,7 @@ p,
 a,
 label {
     text-shadow: 4px 4px 20px rgb(0, 0, 0);
+    padding: 0 2rem;
 }
 
 h1,
@@ -227,4 +228,15 @@ footer a {
     width: 100vw;
     height: 100vh;
     background-color: var(--background-color);
+}
+
+#chart-container {
+    max-width: 75vw;
+    margin: 0 auto;
+}
+
+#debt-chart {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 auto !important;
 }

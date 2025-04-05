@@ -9,7 +9,8 @@ export default async (req, context) => {
     try {
         const { data: debt, error } = await supabase
             .from('debt')
-            .select('*');
+            .select('*')
+            .order('created_at', { ascending: false });
 
         if (error) {
             console.error('Error fetching debt:', error);
@@ -30,4 +31,4 @@ export default async (req, context) => {
             headers: { 'Content-Type': 'application/json' },
         });
     }
-};	
+};
