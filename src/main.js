@@ -118,7 +118,8 @@ function buildChart(data) {
         return {
             x: entry.created_at,
             y: (initialDebt + gamesLeft) - gamesPlayed,
-            description: entry.description
+            description: entry.description,
+            amount: entry.amount
         };
     });
 
@@ -150,7 +151,8 @@ function buildChart(data) {
                         label: function (context) {
                             const line1 = `${context.raw.y} games remaining`;
                             const line2 = `Reason: ${context.raw.description}`;
-                            return [line1, line2];
+                            const line3 = `Amount: ${context.raw.amount}`;
+                            return [line1, line2, line3];
                         }
                     }
                 }
