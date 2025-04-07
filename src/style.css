@@ -150,6 +150,10 @@ header h1 {
     margin: 0;
 }
 
+header img {
+    max-width: 270px;
+}
+
 footer {
     position: sticky;
     top: 100vh;
