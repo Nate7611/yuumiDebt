@@ -99,15 +99,19 @@ function calculateDebt(debt) {
 function buildLog(data) {
     LOG_CONTAINER.textContent = '';
 
-    let sortedData = [...data.debt].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    const RED_COLOR = '#eb4034';
+    const GREEN_COLOR = '#34eb3a';
+
+    const SORTED_DATA = [...data.debt].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
     if (displayFullLog) {
-        sortedData.forEach(entry => {
+        SORTED_DATA.forEach(entry => {
             const tableRow = document.createElement('tr');
 
             const amountData = document.createElement('td');
             const gameText = entry.amount !== 1 && entry.amount !== -1 ? 'Games' : 'Game';
             amountData.textContent = `${entry.amount > 0 ? '+' : ''}${entry.amount} ${gameText}`;
+            entry.amount > 0 ? amountData.style.color = RED_COLOR : amountData.style.color = GREEN_COLOR;
             tableRow.append(amountData);
 
             const descriptionData = document.createElement('td');
@@ -130,16 +134,17 @@ function buildLog(data) {
             const tableRow = document.createElement('tr');
 
             const amountData = document.createElement('td');
-            const gameText = sortedData[index].amount !== 1 && sortedData[index].amount !== -1 ? 'Games' : 'Game';
-            amountData.textContent = `${sortedData[index].amount > 0 ? '+' : ''}${sortedData[index].amount} ${gameText}`;
+            const gameText = SORTED_DATA[index].amount !== 1 && SORTED_DATA[index].amount !== -1 ? 'Games' : 'Game';
+            amountData.textContent = `${SORTED_DATA[index].amount > 0 ? '+' : ''}${SORTED_DATA[index].amount} ${gameText}`;
+            SORTED_DATA[index].amount > 0 ? amountData.style.color = RED_COLOR : amountData.style.color = GREEN_COLOR;
             tableRow.append(amountData);
 
             const descriptionData = document.createElement('td');
-            descriptionData.textContent = sortedData[index].description;
+            descriptionData.textContent = SORTED_DATA[index].description;
             tableRow.append(descriptionData);
 
             const dateData = document.createElement('td');
-            const date = new Date(sortedData[index].created_at);
+            const date = new Date(SORTED_DATA[index].created_at);
             const options = { year: 'numeric', month: 'long', day: '2-digit' };
             const humanReadableDate = date.toLocaleDateString(undefined, options);
 
