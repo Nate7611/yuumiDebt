@@ -12,6 +12,8 @@ const LOG_CONTAINER = document.getElementById('log-container');
 
 const LOADING_SCREEN = document.getElementById('loading-screen');
 
+const FULL_LOG_BUTTON = document.getElementById('full-log-button');
+
 const CACHE_EXPIRATION_TIME = 2 * 60 * 1000;
 const INITIAL_DEBT = 258;
 const DEBT_LOG_LENGTH = 15;
@@ -46,6 +48,12 @@ async function fetchDebt() {
     if (cachedDebt && cachedDebtTime && Date.now() - cachedDebtTime < CACHE_EXPIRATION_TIME) {
         const parsedDebt = JSON.parse(cachedDebt);
         updateSite(parsedDebt);
+
+
+        FULL_LOG_BUTTON.addEventListener('click', () => {
+            displayFullLog = !displayFullLog;
+            buildLog(parsedDebt);
+        });
     }
     else {
         try {
@@ -54,6 +62,11 @@ async function fetchDebt() {
 
             localStorage.setItem('debtData', JSON.stringify(data));
             localStorage.setItem('debtDataTime', Date.now().toString());
+
+            FULL_LOG_BUTTON.addEventListener('click', () => {
+                displayFullLog = !displayFullLog;
+                buildLog(data);
+            });
 
             updateSite(data);
         } catch (error) {
@@ -84,27 +97,57 @@ function calculateDebt(debt) {
 }
 
 function buildLog(data) {
-    for (let index = 0; index < DEBT_LOG_LENGTH; index++) {
-        const tableRow = document.createElement('tr');
+    LOG_CONTAINER.textContent = '';
 
-        const amountData = document.createElement('td');
-        const gameText = data.debt[index].amount !== 1 && data.debt[index].amount !== -1 ? 'Games' : 'Game';
-        amountData.textContent = `${data.debt[index].amount > 0 ? '+' : ''}${data.debt[index].amount} ${gameText}`;
-        tableRow.append(amountData);
+    let sortedData = [...data.debt].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-        const descriptionData = document.createElement('td');
-        descriptionData.textContent = data.debt[index].description;
-        tableRow.append(descriptionData);
+    if (displayFullLog) {
+        sortedData.forEach(entry => {
+            const tableRow = document.createElement('tr');
 
-        const dateData = document.createElement('td');
-        const date = new Date(data.debt[index].created_at);
-        const options = { year: 'numeric', month: 'long', day: '2-digit' };
-        const humanReadableDate = date.toLocaleDateString(undefined, options);
+            const amountData = document.createElement('td');
+            const gameText = entry.amount !== 1 && entry.amount !== -1 ? 'Games' : 'Game';
+            amountData.textContent = `${entry.amount > 0 ? '+' : ''}${entry.amount} ${gameText}`;
+            tableRow.append(amountData);
 
-        dateData.textContent = humanReadableDate;
-        tableRow.append(dateData);
+            const descriptionData = document.createElement('td');
+            descriptionData.textContent = entry.description;
+            tableRow.append(descriptionData);
 
-        LOG_CONTAINER.append(tableRow);
+            const dateData = document.createElement('td');
+            const date = new Date(entry.created_at);
+            const options = { year: 'numeric', month: 'long', day: '2-digit' };
+            const humanReadableDate = date.toLocaleDateString(undefined, options);
+
+            dateData.textContent = humanReadableDate;
+            tableRow.append(dateData);
+
+            LOG_CONTAINER.append(tableRow);
+        });
+    }
+    else {
+        for (let index = 0; index < DEBT_LOG_LENGTH; index++) {
+            const tableRow = document.createElement('tr');
+
+            const amountData = document.createElement('td');
+            const gameText = sortedData[index].amount !== 1 && sortedData[index].amount !== -1 ? 'Games' : 'Game';
+            amountData.textContent = `${sortedData[index].amount > 0 ? '+' : ''}${sortedData[index].amount} ${gameText}`;
+            tableRow.append(amountData);
+
+            const descriptionData = document.createElement('td');
+            descriptionData.textContent = sortedData[index].description;
+            tableRow.append(descriptionData);
+
+            const dateData = document.createElement('td');
+            const date = new Date(sortedData[index].created_at);
+            const options = { year: 'numeric', month: 'long', day: '2-digit' };
+            const humanReadableDate = date.toLocaleDateString(undefined, options);
+
+            dateData.textContent = humanReadableDate;
+            tableRow.append(dateData);
+
+            LOG_CONTAINER.append(tableRow);
+        }
     }
 };
 

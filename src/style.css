@@ -226,17 +226,14 @@ footer a {
     font-size: 1rem;
 }
 
-#loading-screen {
+#debt-log {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: var(--background-color);
+    flex-direction: column;
+    gap: 20px;
+}
+
+#debt-log a {
+    text-decoration: underline;
 }
 
 #chart-container {
@@ -248,4 +245,17 @@ footer a {
     width: 100% !important;
     height: 100% !important;
     margin: 0 auto !important;
+}
+
+#loading-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--background-color);
 }
