@@ -1,20 +1,22 @@
 import Chart from 'chart.js/auto';
 import 'chartjs-adapter-luxon';
-import { DateTime } from 'luxon';
 
-const progressBarElement = document.getElementById('progress-bar');
-const progressBarPercentTextElement = document.getElementById('progress-bar-percent-text');
-const progressBarNumberTextElement = document.getElementById('progress-bar-number-text');
+const PROGRESS_BAR = document.getElementById('progress-bar');
+const PROGRESS_BAR_PERCENT_TEXT = document.getElementById('progress-bar-percent-text');
+const PROGRESS_BAR_NUMBER_TEXT = document.getElementById('progress-bar-number-text');
 
-const addDebtButton = document.getElementById('add-debt-button');
-const removeDebtButton = document.getElementById('remove-debt-button');
+const ADD_DEBT_BUTTON = document.getElementById('add-debt-button');
+const REMOVE_DEBT_BUTTON = document.getElementById('remove-debt-button');
 
-const logContainer = document.getElementById('log-container');
+const LOG_CONTAINER = document.getElementById('log-container');
 
-const loadingScreen = document.getElementById('loading-screen');
+const LOADING_SCREEN = document.getElementById('loading-screen');
 
 const CACHE_EXPIRATION_TIME = 2 * 60 * 1000;
-const initialDebt = 258;
+const INITIAL_DEBT = 258;
+const DEBT_LOG_LENGTH = 15;
+
+let displayFullLog = false;
 
 window.addEventListener('DOMContentLoaded', () => {
     main();
@@ -23,8 +25,8 @@ window.addEventListener('DOMContentLoaded', () => {
 function main() {
     fetchDebt();
 
-    addDebtButton.addEventListener('click', addDebt);
-    removeDebtButton.addEventListener('click', removeDebt);
+    ADD_DEBT_BUTTON.addEventListener('click', addDebt);
+    REMOVE_DEBT_BUTTON.addEventListener('click', removeDebt);
 };
 
 function updateSite(data) {
@@ -33,7 +35,7 @@ function updateSite(data) {
     buildChart(data);
 
     setTimeout(() => {
-        loadingScreen.style.display = 'none';
+        LOADING_SCREEN.style.display = 'none';
     }, 100);
 }
 
@@ -56,7 +58,7 @@ async function fetchDebt() {
             updateSite(data);
         } catch (error) {
             console.error('Error fetching debt:', error);
-            loadingScreen.textContent = 'Error loading content, please try again later.';
+            LOADING_SCREEN.textContent = 'Error loading content, please try again later.';
         }
     }
 }
@@ -74,36 +76,36 @@ function calculateDebt(debt) {
         }
     });
 
-    const percentComplete = ((Math.abs(debtPayed) / (initialDebt + debtAdded)) * 100).toFixed(1);
+    const percentComplete = ((Math.abs(debtPayed) / (INITIAL_DEBT + debtAdded)) * 100).toFixed(1);
 
-    progressBarElement.style.width = (percentComplete + '%').toString();
-    progressBarPercentTextElement.textContent = ('I am ' + percentComplete + '% Free!').toString();
-    progressBarNumberTextElement.textContent = (Math.abs(debtPayed) + '/' + (initialDebt + debtAdded) + ' Games Completed').toString();
+    PROGRESS_BAR.style.width = (percentComplete + '%').toString();
+    PROGRESS_BAR_PERCENT_TEXT.textContent = ('I am ' + percentComplete + '% Free!').toString();
+    PROGRESS_BAR_NUMBER_TEXT.textContent = (Math.abs(debtPayed) + '/' + (INITIAL_DEBT + debtAdded) + ' Games Completed').toString();
 }
 
 function buildLog(data) {
-    data.debt.forEach(entry => {
+    for (let index = 0; index < DEBT_LOG_LENGTH; index++) {
         const tableRow = document.createElement('tr');
 
         const amountData = document.createElement('td');
-        const gameText = entry.amount !== 1 && entry.amount !== -1 ? 'Games' : 'Game';
-        amountData.textContent = `${entry.amount > 0 ? '+' : ''}${entry.amount} ${gameText}`;
+        const gameText = data.debt[index].amount !== 1 && data.debt[index].amount !== -1 ? 'Games' : 'Game';
+        amountData.textContent = `${data.debt[index].amount > 0 ? '+' : ''}${data.debt[index].amount} ${gameText}`;
         tableRow.append(amountData);
 
         const descriptionData = document.createElement('td');
-        descriptionData.textContent = entry.description;
+        descriptionData.textContent = data.debt[index].description;
         tableRow.append(descriptionData);
 
         const dateData = document.createElement('td');
-        const date = new Date(entry.created_at);
+        const date = new Date(data.debt[index].created_at);
         const options = { year: 'numeric', month: 'long', day: '2-digit' };
         const humanReadableDate = date.toLocaleDateString(undefined, options);
 
         dateData.textContent = humanReadableDate;
         tableRow.append(dateData);
 
-        logContainer.append(tableRow);
-    });
+        LOG_CONTAINER.append(tableRow);
+    }
 };
 
 function buildChart(data) {
@@ -117,7 +119,7 @@ function buildChart(data) {
 
         return {
             x: entry.created_at,
-            y: (initialDebt + gamesLeft) - gamesPlayed,
+            y: (INITIAL_DEBT + gamesLeft) - gamesPlayed,
             description: entry.description,
             amount: entry.amount
         };
