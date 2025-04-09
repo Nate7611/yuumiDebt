@@ -238,6 +238,7 @@ footer a {
 
 #debt-log a {
     text-decoration: underline;
+    user-select: none;
 }
 
 #chart-container {
