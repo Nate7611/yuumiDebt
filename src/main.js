@@ -116,6 +116,7 @@ function buildLog(data) {
 
             const descriptionData = document.createElement('td');
             descriptionData.textContent = entry.description;
+            descriptionData.style.textTransform = 'capitalize';
             tableRow.append(descriptionData);
 
             const dateData = document.createElement('td');
@@ -141,6 +142,7 @@ function buildLog(data) {
 
             const descriptionData = document.createElement('td');
             descriptionData.textContent = SORTED_DATA[index].description;
+            descriptionData.style.textTransform = 'capitalize';
             tableRow.append(descriptionData);
 
             const dateData = document.createElement('td');
