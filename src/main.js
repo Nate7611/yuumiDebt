@@ -1,22 +1,22 @@
 import Chart from 'chart.js/auto';
 import 'chartjs-adapter-luxon';
 
-const PROGRESS_BAR = document.getElementById('progress-bar');
-const PROGRESS_BAR_PERCENT_TEXT = document.getElementById('progress-bar-percent-text');
-const PROGRESS_BAR_NUMBER_TEXT = document.getElementById('progress-bar-number-text');
+const progressBar = document.getElementById('progress-bar');
+const progressBarPercentText = document.getElementById('progress-bar-percent-text');
+const progressBarNumberText = document.getElementById('progress-bar-number-text');
 
-const ADD_DEBT_BUTTON = document.getElementById('add-debt-button');
-const REMOVE_DEBT_BUTTON = document.getElementById('remove-debt-button');
+const addDebtButton = document.getElementById('add-debt-button');
+const removeDebtButton = document.getElementById('remove-debt-button');
 
-const LOG_CONTAINER = document.getElementById('log-container');
+const logContainer = document.getElementById('log-container');
 
-const LOADING_SCREEN = document.getElementById('loading-screen');
+const loadingScreen = document.getElementById('loading-screen');
 
-const FULL_LOG_BUTTON = document.getElementById('full-log-button');
+const fullLogButton = document.getElementById('full-log-button');
 
-const CACHE_EXPIRATION_TIME = 2 * 60 * 1000;
-const INITIAL_DEBT = 258;
-const DEBT_LOG_LENGTH = 15;
+const cacheExpirationTime = 2 * 60 * 1000;
+const initialDebt = 258;
+const debtLogLength = 15;
 
 let displayFullLog = false;
 
@@ -27,8 +27,8 @@ window.addEventListener('DOMContentLoaded', () => {
 function main() {
     fetchDebt();
 
-    ADD_DEBT_BUTTON.addEventListener('click', addDebt);
-    REMOVE_DEBT_BUTTON.addEventListener('click', removeDebt);
+    addDebtButton.addEventListener('click', addDebt);
+    removeDebtButton.addEventListener('click', removeDebt);
 };
 
 function updateSite(data) {
@@ -37,7 +37,7 @@ function updateSite(data) {
     buildChart(data);
 
     setTimeout(() => {
-        LOADING_SCREEN.style.display = 'none';
+        loadingScreen.style.display = 'none';
     }, 100);
 }
 
@@ -45,12 +45,12 @@ async function fetchDebt() {
     const cachedDebt = localStorage.getItem('debtData');
     const cachedDebtTime = localStorage.getItem('debtDataTime');
 
-    if (cachedDebt && cachedDebtTime && Date.now() - cachedDebtTime < CACHE_EXPIRATION_TIME) {
+    if (cachedDebt && cachedDebtTime && Date.now() - cachedDebtTime < cacheExpirationTime) {
         const parsedDebt = JSON.parse(cachedDebt);
         updateSite(parsedDebt);
 
 
-        FULL_LOG_BUTTON.addEventListener('click', () => {
+        fullLogButton.addEventListener('click', () => {
             displayFullLog = !displayFullLog;
             buildLog(parsedDebt);
         });
@@ -63,7 +63,7 @@ async function fetchDebt() {
             localStorage.setItem('debtData', JSON.stringify(data));
             localStorage.setItem('debtDataTime', Date.now().toString());
 
-            FULL_LOG_BUTTON.addEventListener('click', () => {
+            fullLogButton.addEventListener('click', () => {
                 displayFullLog = !displayFullLog;
                 buildLog(data);
             });
@@ -71,7 +71,7 @@ async function fetchDebt() {
             updateSite(data);
         } catch (error) {
             console.error('Error fetching debt:', error);
-            LOADING_SCREEN.textContent = 'Error loading content, please try again later.';
+            loadingScreen.textContent = 'Error loading content, please try again later.';
         }
     }
 }
@@ -89,74 +89,101 @@ function calculateDebt(debt) {
         }
     });
 
-    const percentComplete = ((Math.abs(debtPayed) / (INITIAL_DEBT + debtAdded)) * 100).toFixed(1);
+    const percentComplete = ((Math.abs(debtPayed) / (initialDebt + debtAdded)) * 100).toFixed(1);
 
-    PROGRESS_BAR.style.width = (percentComplete + '%').toString();
-    PROGRESS_BAR_PERCENT_TEXT.textContent = ('I am ' + percentComplete + '% Free!').toString();
-    PROGRESS_BAR_NUMBER_TEXT.textContent = (Math.abs(debtPayed) + '/' + (INITIAL_DEBT + debtAdded) + ' Games Completed').toString();
+    progressBar.style.width = (percentComplete + '%').toString();
+    progressBarPercentText.textContent = ('I am ' + percentComplete + '% Free!').toString();
+    progressBarNumberText.textContent = (Math.abs(debtPayed) + '/' + (initialDebt + debtAdded) + ' Games Completed').toString();
 }
 
 function buildLog(data) {
-    LOG_CONTAINER.textContent = '';
+    const rows = logContainer.querySelectorAll('tr');
+    rows.forEach((row, index) => {
+        if (index !== 0) row.remove();
+    });
 
-    const RED_COLOR = '#eb4034';
-    const GREEN_COLOR = '#34eb3a';
+    const redColor = '#eb4034';
+    const greenColor = '#34eb3a';
 
-    const SORTED_DATA = [...data.debt].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    const sortedData = [...data.debt].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-    if (displayFullLog) {
-        SORTED_DATA.forEach(entry => {
-            const tableRow = document.createElement('tr');
+    let debtLogCounter = 0;
+    let supportGameEntries = [];
+    let randomBetEntries = [];
 
-            const amountData = document.createElement('td');
-            const gameText = entry.amount !== 1 && entry.amount !== -1 ? 'Games' : 'Game';
-            amountData.textContent = `${entry.amount > 0 ? '+' : ''}${entry.amount} ${gameText}`;
-            entry.amount > 0 ? amountData.style.color = RED_COLOR : amountData.style.color = GREEN_COLOR;
-            tableRow.append(amountData);
+    const rowsToInsert = [];
 
-            const descriptionData = document.createElement('td');
-            descriptionData.textContent = entry.description;
-            descriptionData.style.textTransform = 'capitalize';
-            tableRow.append(descriptionData);
-
-            const dateData = document.createElement('td');
-            const date = new Date(entry.created_at);
-            const options = { year: 'numeric', month: 'long', day: '2-digit' };
-            const humanReadableDate = date.toLocaleDateString(undefined, options);
-
-            dateData.textContent = humanReadableDate;
-            tableRow.append(dateData);
-
-            LOG_CONTAINER.append(tableRow);
-        });
-    }
-    else {
-        for (let index = 0; index < DEBT_LOG_LENGTH; index++) {
-            const tableRow = document.createElement('tr');
-
-            const amountData = document.createElement('td');
-            const gameText = SORTED_DATA[index].amount !== 1 && SORTED_DATA[index].amount !== -1 ? 'Games' : 'Game';
-            amountData.textContent = `${SORTED_DATA[index].amount > 0 ? '+' : ''}${SORTED_DATA[index].amount} ${gameText}`;
-            SORTED_DATA[index].amount > 0 ? amountData.style.color = RED_COLOR : amountData.style.color = GREEN_COLOR;
-            tableRow.append(amountData);
-
-            const descriptionData = document.createElement('td');
-            descriptionData.textContent = SORTED_DATA[index].description;
-            descriptionData.style.textTransform = 'capitalize';
-            tableRow.append(descriptionData);
-
-            const dateData = document.createElement('td');
-            const date = new Date(SORTED_DATA[index].created_at);
-            const options = { year: 'numeric', month: 'long', day: '2-digit' };
-            const humanReadableDate = date.toLocaleDateString(undefined, options);
-
-            dateData.textContent = humanReadableDate;
-            tableRow.append(dateData);
-
-            LOG_CONTAINER.append(tableRow);
+    sortedData.forEach(entry => {
+        if (entry.description === 'Played Support Game.') {
+            supportGameEntries.push(entry);
+            return;
         }
+
+        if (entry.description == 'Random Number Gen Bet.') {
+            randomBetEntries.push(entry);
+            return;
+        }
+
+        if (debtLogCounter >= debtLogLength && !displayFullLog) {
+            return;
+        }
+
+        const tableRow = document.createElement('tr');
+
+        const amountData = document.createElement('td');
+        const gameText = Math.abs(entry.amount) === 1 ? 'Game' : 'Games';
+        amountData.textContent = `${entry.amount > 0 ? '+' : ''}${entry.amount} ${gameText}`;
+        amountData.style.color = entry.amount > 0 ? redColor : greenColor;
+        tableRow.append(amountData);
+
+        const descriptionData = document.createElement('td');
+        descriptionData.textContent = entry.description;
+        descriptionData.style.textTransform = 'capitalize';
+        tableRow.append(descriptionData);
+
+        const dateData = document.createElement('td');
+        const date = new Date(entry.created_at);
+        const options = { year: 'numeric', month: 'long', day: '2-digit' };
+        dateData.textContent = date.toLocaleDateString(undefined, options);
+        tableRow.append(dateData);
+
+        rowsToInsert.push(tableRow);
+        debtLogCounter++;
+    });
+
+    function combineEntries(entries, descriptionText) {
+        if (entries.length === 0) return;
+    
+        let amount = 0;
+        entries.forEach(entry => {
+            amount += entry.amount;
+        });
+    
+        const tableRow = document.createElement('tr');
+    
+        const amountData = document.createElement('td');
+        const gameText = Math.abs(amount) === 1 ? 'Game' : 'Games';
+        amountData.textContent = `${amount > 0 ? '+' : ''}${amount} ${gameText}`;
+        amountData.style.color = amount > 0 ? redColor : greenColor;
+        tableRow.append(amountData);
+    
+        const descriptionData = document.createElement('td');
+        descriptionData.textContent = descriptionText;
+        descriptionData.style.textTransform = 'capitalize';
+        tableRow.append(descriptionData);
+    
+        const dateData = document.createElement('td');
+        dateData.textContent = '---';
+        tableRow.append(dateData);
+    
+        logContainer.insertBefore(tableRow, logContainer.rows[1]);
     }
-};
+    
+    combineEntries(randomBetEntries, `Ran Random Number Gen ${randomBetEntries.length} Times.`);
+    combineEntries(supportGameEntries, `Played ${supportGameEntries.length} Support Games.`);
+
+    rowsToInsert.forEach(row => logContainer.appendChild(row));
+}
 
 function buildChart(data) {
     const sorted = data.debt.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
@@ -169,7 +196,7 @@ function buildChart(data) {
 
         return {
             x: entry.created_at,
-            y: (INITIAL_DEBT + gamesLeft) - gamesPlayed,
+            y: (initialDebt + gamesLeft) - gamesPlayed,
             description: entry.description,
             amount: entry.amount
         };
